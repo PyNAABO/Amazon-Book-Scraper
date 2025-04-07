@@ -1,9 +1,18 @@
-from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-import requests
+from fastapi import FastAPI, HTTPException
 from bs4 import BeautifulSoup
+import requests
+import random
 import json
 import os
+
+USER_AGENTS = [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.198 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.5672.126 Safari/537.36",
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.5938.92 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_4) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.4 Safari/605.1.15"
+]
 
 app = FastAPI()
 
@@ -30,12 +39,10 @@ print("hello world!!")
 @app.get("/scrape")
 def scrape_amazon(url: str):
     headers = {
-        "User-Agent":
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/89.0.4389.82 Safari/537.36"
+        "User-Agent": random.choice(USER_AGENTS),
+        "Accept-Language": "en-US,en;q=0.9"
     }
-
+    print(f"Using User-Agent: {headers['User-Agent']}")
     try:
         response = requests.get(url, headers=headers)
         with open('response.html', 'w', encoding='utf-8') as file:

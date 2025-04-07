@@ -111,7 +111,7 @@ def save_to_json(book):
     books = load_books()
     books.append(book)
     with open(BOOKS_FILE, 'w') as f:
-        json.dump(books, f, indent=2)
+        json.dump(books, f, indent=4)
 
 
 def get_next_id():

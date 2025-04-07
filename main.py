@@ -24,33 +24,46 @@ def read_root():
     return {"message": "Backend is live 👋"}
 
 
+print("hello world!!")
+
+
 @app.get("/scrape")
 def scrape_amazon(url: str):
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                      "AppleWebKit/537.36 (KHTML, like Gecko) "
-                      "Chrome/89.0.4389.82 Safari/537.36"
+        "User-Agent":
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/89.0.4389.82 Safari/537.36"
     }
 
     try:
         response = requests.get(url, headers=headers)
+        with open('response.html', 'w', encoding='utf-8') as file:
+            file.write(str(response.text))
+
         soup = BeautifulSoup(response.text, 'html.parser')
 
         title = soup.find(id='productTitle')
         title = title.get_text(strip=True) if title else "Title not found"
+
+        if (title == "Title not found" and "enter the characters you see below"
+                in response.text.lower()):
+            return {
+                "error":
+                "🚫 Blocked by Amazon CAPTCHA!! Please try again later."
+            }
 
         authors = soup.select('.author .a-link-normal')
         if not authors:
             authors = soup.select('.contributorNameID')
         author_names = [a.get_text(strip=True) for a in authors]
 
-        image = (
-            soup.find(id='imgBlkFront') or
-            soup.find(id='ebooksImgBlkFront') or
-            soup.select_one('.imgTagWrapper img') or
-            soup.find(id='landingImage')
-        )
-        image_url = image['src'] if image and 'src' in image.attrs else "No image found"
+        image = (soup.find(id='imgBlkFront')
+                 or soup.find(id='ebooksImgBlkFront')
+                 or soup.select_one('.imgTagWrapper img')
+                 or soup.find(id='landingImage'))
+        image_url = image[
+            'src'] if image and 'src' in image.attrs else "No image found"
 
         book_data = {
             "id": get_next_id(),

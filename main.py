@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import requests
 from bs4 import BeautifulSoup
@@ -10,7 +10,7 @@ app = FastAPI()
 # CORS setup
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Replace with your frontend origin for security
+    allow_origins=["*"],  # Lock down in production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -52,15 +52,14 @@ def scrape_amazon(url: str):
         )
         image_url = image['src'] if image and 'src' in image.attrs else "No image found"
 
-        # Create book data dictionary
         book_data = {
+            "id": get_next_id(),
             "bookName": title,
             "authors": author_names if author_names else ["Unknown Author"],
             "imageUrl": image_url
         }
 
         save_to_json(book_data)
-
         return book_data
 
     except Exception as e:
@@ -69,30 +68,54 @@ def scrape_amazon(url: str):
 
 @app.get("/books")
 def get_all_scraped_books():
+    return load_books()
+
+
+@app.get("/books/consume")
+def consume_and_clear_books():
+    books = load_books()
+
+    # Clear the file right after reading
+    with open(BOOKS_FILE, 'w') as f:
+        f.write('[]')
+
+    return books
+
+
+@app.delete("/books/{book_id}")
+def delete_book(book_id: int):
+    books = load_books()
+    filtered_books = [book for book in books if book["id"] != book_id]
+
+    if len(books) == len(filtered_books):
+        raise HTTPException(status_code=404, detail="Book not found")
+
+    with open(BOOKS_FILE, 'w') as f:
+        json.dump(filtered_books, f, indent=2)
+
+    return {"message": f"Book with id {book_id} deleted ✅"}
+
+
+# Utilities
+def load_books():
     if not os.path.exists(BOOKS_FILE):
         return []
-
-    with open(BOOKS_FILE, 'r') as file:
-        try:
-            data = json.load(file)
-            return data
-        except json.JSONDecodeError:
-            return []
+    try:
+        with open(BOOKS_FILE, 'r') as f:
+            return json.load(f)
+    except json.JSONDecodeError:
+        return []
 
 
 def save_to_json(book):
-    # Load existing data
-    data = []
-    if os.path.exists(BOOKS_FILE):
-        try:
-            with open(BOOKS_FILE, 'r') as f:
-                data = json.load(f)
-        except json.JSONDecodeError:
-            data = []
-
-    # Add new book
-    data.append(book)
-
-    # Save back to file
+    books = load_books()
+    books.append(book)
     with open(BOOKS_FILE, 'w') as f:
-        json.dump(data, f, indent=2)
+        json.dump(books, f, indent=2)
+
+
+def get_next_id():
+    books = load_books()
+    if not books:
+        return 1
+    return max(book["id"] for book in books) + 1

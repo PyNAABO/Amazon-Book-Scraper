@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Amazon Book Scraper</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    .input-container {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    input[type="text"] {
+      width: 70%;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #FF9900;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    button:hover {
+      background-color: #e68900;
+    }
+
+    #statusMessage {
+      text-align: center;
+      margin: 20px;
+      font-weight: bold;
+    }
+
+    .book-details {
+      display: none;
+      margin-top: 30px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .book-detail {
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+    }
+
+    .book-label {
+      font-weight: bold;
+      width: 100px;
+      flex-shrink: 0;
+      color: #444;
+    }
+
+    .book-value {
+      flex-grow: 1;
+      margin-right: 10px;
+      word-break: break-word;
+    }
+
+    .copy-btn {
+      padding: 6px 12px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .copy-btn:hover {
+      background-color: #0056b3;
+    }
+
+    #bookImage {
+      max-width: 200px;
+      border: 1px solid #ccc;
+      margin-top: 10px;
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Amazon Book Scraper</h1>
+
+  <div class="input-container">
+    <input type="text" id="amazonUrl" placeholder="Enter Amazon Book URL">
+    <button id="scrapeButton">Scrape</button>
+  </div>
+
+  <div id="statusMessage"></div>
+
+  <div class="book-details" id="bookDetails">
+    <div class="book-detail">
+      <div class="book-label">Title:</div>
+      <div class="book-value" id="bookTitle"></div>
+      <button class="copy-btn" onclick="copyText('bookTitle')">Copy</button>
+    </div>
+
+    <div class="book-detail">
+      <div class="book-label">Author(s):</div>
+      <div class="book-value" id="bookAuthor"></div>
+      <button class="copy-btn" onclick="copyText('bookAuthor')">Copy</button>
+    </div>
+
+    <div class="book-detail">
+      <div class="book-label">Image URL:</div>
+      <div class="book-value" id="bookImageUrl"></div>
+      <button class="copy-btn" onclick="copyText('bookImageUrl')">Copy</button>
+    </div>
+
+    <div class="book-detail" style="flex-direction: column; align-items: flex-start;">
+      <div class="book-label" style="margin-bottom: 10px;">Cover Image:</div>
+      <img id="bookImage" src="" alt="Book Cover">
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>

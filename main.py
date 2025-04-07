@@ -53,7 +53,7 @@ def scrape_amazon(url: str):
         title = soup.find(id='productTitle')
         title = title.get_text(strip=True) if title else "Title not found"
 
-        if (title == "Title not found" and "enter the characters you see below"
+        if (title == "Title not found" or "enter the characters you see below"
                 in response.text.lower()):
             return {
                 "error":

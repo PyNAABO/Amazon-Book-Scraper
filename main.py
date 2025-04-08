@@ -6,6 +6,9 @@ import random
 import json
 import os
 
+
+database_url = os.environ.get('SCRAPER_API_KEY')
+
 USER_AGENTS = [
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.198 Safari/537.36",
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.5672.126 Safari/537.36",
@@ -44,7 +47,9 @@ def scrape_amazon(url: str):
     }
     print(f"Using User-Agent: {headers['User-Agent']}")
     try:
-        response = requests.get(url, headers=headers)
+        scraper_url = f"http://api.scraperapi.com?api_key={SCRAPER_API_KEY}&url={url}&country_code=us"
+        response = requests.get(scraper_url)
+
         with open('response.html', 'w', encoding='utf-8') as file:
             file.write(str(response.text))
 

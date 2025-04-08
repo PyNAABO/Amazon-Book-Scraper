@@ -1,5 +1,6 @@
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, HTTPException
+from urllib.parse import unquote
 from bs4 import BeautifulSoup
 import requests
 import random
@@ -105,10 +106,15 @@ def consume_and_clear_books():
     return books
 
 
-@app.delete("/books/{book_id}")
-def delete_book(book_id: int):
+@app.delete("/books/title/{book_title}")
+def delete_book_by_title(book_title: str):
+    decoded_title = unquote(book_title).strip().lower()
     books = load_books()
-    filtered_books = [book for book in books if book["id"] != book_id]
+    
+    filtered_books = [
+        book for book in books
+        if book.get("bookName", "").strip().lower() != decoded_title
+    ]
 
     if len(books) == len(filtered_books):
         raise HTTPException(status_code=404, detail="Book not found")
@@ -116,7 +122,8 @@ def delete_book(book_id: int):
     with open(BOOKS_FILE, 'w') as f:
         json.dump(filtered_books, f, indent=2)
 
-    return {"message": f"Book with id {book_id} deleted ✅"}
+    return {"message": f"Book titled '{book_title}' deleted ✅"}
+
 
 
 # Utilities

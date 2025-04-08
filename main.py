@@ -77,7 +77,6 @@ def scrape_amazon(url: str):
             'src'] if image and 'src' in image.attrs else "No image found"
 
         book_data = {
-            "id": get_next_id(),
             "bookName": title,
             "authors": author_names if author_names else ["Unknown Author"],
             "imageUrl": image_url
@@ -110,7 +109,7 @@ def consume_and_clear_books():
 def delete_book_by_title(book_title: str):
     decoded_title = unquote(book_title).strip().lower()
     books = load_books()
-    
+
     filtered_books = [
         book for book in books
         if book.get("bookName", "").strip().lower() != decoded_title
@@ -123,7 +122,6 @@ def delete_book_by_title(book_title: str):
         json.dump(filtered_books, f, indent=2)
 
     return {"message": f"Book titled '{book_title}' deleted ✅"}
-
 
 
 # Utilities
@@ -142,10 +140,3 @@ def save_to_json(book):
     books.append(book)
     with open(BOOKS_FILE, 'w') as f:
         json.dump(books, f, indent=4)
-
-
-def get_next_id():
-    books = load_books()
-    if not books:
-        return 1
-    return max(book["id"] for book in books) + 1

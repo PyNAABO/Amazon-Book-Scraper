@@ -1,5 +1,5 @@
+from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
 from fastapi import FastAPI, HTTPException
 from urllib.parse import unquote
 from bs4 import BeautifulSoup
@@ -17,7 +17,10 @@ USER_AGENTS = [
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_4) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.4 Safari/605.1.15"
 ]
 
-FREE_PROXIES = ["http://34.140.197.165:3128", "http://64.225.8.174:9991"]
+FREE_PROXIES = [
+    "https://44.215.100.135:8118", "http://43.153.94.8:13001",
+    "http://54.180.131.34:20202"
+]
 
 app = FastAPI()
 

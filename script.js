@@ -12,13 +12,14 @@ const bookImage = document.getElementById('bookImage');
 
 scrapeButton.addEventListener('click', async () => {
   const url = amazonUrlInput.value.trim();
-  if (!url) {
-    showStatus('Please enter a valid Amazon book URL.', 'red');
+  if (!url.match(/^https?:\/\/(www\.)?amazon\.[a-z.]+\/.+$/)) {
+    showStatus('That doesn’t look like a valid Amazon URL, friend. 🧐', 'red');
     return;
   }
 
   showStatus('Scraping book info...', 'black');
   bookDetails.style.display = 'none';
+  bookImage.style.display = 'none';
 
   try {
     const response = await fetch(`${backendUrl}?url=${encodeURIComponent(url)}`);
@@ -32,8 +33,12 @@ scrapeButton.addEventListener('click', async () => {
     bookTitle.textContent = data.bookName || 'No title found';
     bookAuthor.textContent = data.authors?.join(', ') || 'No author found';
     bookImageUrl.textContent = data.imageUrl || 'No image found';
+
     bookImage.src = data.imageUrl || '';
     bookImage.alt = data.bookName || 'Book Cover';
+
+    bookImage.onload = () => bookImage.style.display = 'block';
+    bookImage.onerror = () => bookImage.style.display = 'none';
 
     bookDetails.style.display = 'block';
     showStatus('Book data loaded!', 'green');
@@ -42,9 +47,28 @@ scrapeButton.addEventListener('click', async () => {
   }
 });
 
+amazonUrlInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') {
+    scrapeButton.click();
+  }
+});
+
 function showStatus(msg, color = 'black') {
-  statusMessage.textContent = msg;
-  statusMessage.style.color = color;
+  statusMessage.innerHTML = `<span style="color:${color}">${msg}</span> <span class="dots"></span>`;
+  animateDots();
+}
+
+function animateDots() {
+  const dots = document.querySelector('.dots');
+  if (!dots) return;
+
+  let count = 0;
+  const interval = setInterval(() => {
+    dots.textContent = '.'.repeat(count % 4);
+    count++;
+  }, 300);
+
+  setTimeout(() => clearInterval(interval), 4000);
 }
 
 function copyText(elementId) {
@@ -64,3 +88,25 @@ function copyText(elementId) {
     }, 1500);
   });
 }
+
+function toggleDarkMode() {
+  const body = document.body;
+  const toggle = document.getElementById('darkToggle');
+  const isDark = body.classList.toggle('dark-mode');
+  toggle.textContent = isDark ? '☀️' : '🌙';
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+}
+
+// Auto theme detection + apply saved preference
+window.addEventListener('DOMContentLoaded', () => {
+  const savedTheme = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const shouldBeDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
+
+  if (shouldBeDark) {
+    document.body.classList.add('dark-mode');
+    document.getElementById('darkToggle').textContent = '☀️';
+  } else {
+    document.getElementById('darkToggle').textContent = '🌙';
+  }
+});

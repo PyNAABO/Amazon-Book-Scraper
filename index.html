@@ -12,6 +12,7 @@
       margin: auto;
       padding: 20px;
       background-color: #f9f9f9;
+      transition: background-color 0.3s, color 0.3s;
     }
 
     h1 {
@@ -100,12 +101,76 @@
       max-width: 200px;
       border: 1px solid #ccc;
       margin-top: 10px;
-      display: block;
+      display: none;
+    }
+
+    /* Dark mode */
+    .dark-mode {
+      background-color: #121212;
+      color: #e0e0e0;
+    }
+
+    .dark-mode input,
+    .dark-mode button {
+      background-color: #1f1f1f;
+      color: #fff;
+      border: 1px solid #333;
+    }
+
+    .dark-mode .book-details {
+      background-color: #1e1e1e;
+      border-color: #444;
+    }
+
+    .dark-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 24px;
+      cursor: pointer;
+      z-index: 999;
+      transition: transform 0.2s ease;
+    }
+
+    .dark-toggle:hover {
+      transform: rotate(15deg);
+    }
+
+    .dark-toggle:active {
+      transform: rotate(360deg) scale(1.2);
+    }
+
+
+    .dots {
+      display: inline-block;
+      font-weight: normal;
+      font-size: 18px;
+    }
+
+    .dark-mode h1 {
+      color: #e0e0e0;
+    }
+
+    .dark-mode input::placeholder {
+      color: #bbb;
+    }
+
+    .dark-mode .book-label {
+      color: #ccc;
+    }
+
+    .dark-mode .copy-btn {
+      background-color: #0056b3;
+    }
+
+    .dark-mode .copy-btn:hover {
+      background-color: #003d80;
     }
   </style>
 </head>
 
 <body>
+  <div class="dark-toggle" onclick="toggleDarkMode()" id="darkToggle">🌙</div>
   <h1>Amazon Book Scraper</h1>
 
   <div class="input-container">
@@ -139,7 +204,6 @@
       <img id="bookImage" src="" alt="Book Cover">
     </div>
   </div>
-
   <script src="script.js"></script>
 </body>
 

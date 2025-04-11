@@ -17,7 +17,7 @@ scrapeButton.addEventListener('click', async () => {
     return;
   }
 
-  showStatus('Scraping book info...', 'black');
+  showStatus('Scraping book info...', getStatusColor());
   bookDetails.style.display = 'none';
   bookImage.style.display = 'none';
 
@@ -95,6 +95,11 @@ function toggleDarkMode() {
   const isDark = body.classList.toggle('dark-mode');
   toggle.textContent = isDark ? '☀️' : '🌙';
   localStorage.setItem('theme', isDark ? 'dark' : 'light');
+}
+
+// Determine appropriate status message color
+function getStatusColor() {
+  return document.body.classList.contains('dark-mode') ? '#e0e0e0' : 'black';
 }
 
 // Auto theme detection + apply saved preference

@@ -37,16 +37,25 @@
     button {
       padding: 10px 20px;
       font-size: 16px;
-      background-color: #FF9900;
-      color: white;
-      border: none;
       border-radius: 5px;
       cursor: pointer;
       margin-left: 10px;
     }
 
-    button:hover {
+    /* Scrape button specific style (unchanged in dark mode) */
+    #scrapeButton {
+      background-color: #FF9900;
+      color: white;
+      border: none;
+    }
+
+    #scrapeButton:hover {
       background-color: #e68900;
+    }
+
+    .dark-mode #scrapeButton {
+      background-color: #FF9900 !important;
+      color: white !important;
     }
 
     #statusMessage {
@@ -111,8 +120,7 @@
       color: #e0e0e0;
     }
 
-    .dark-mode input,
-    .dark-mode button {
+    .dark-mode input {
       background-color: #1f1f1f;
       color: #fff;
       border: 1px solid #333;
@@ -140,7 +148,6 @@
     .dark-toggle:active {
       transform: rotate(360deg) scale(1.2);
     }
-
 
     .dots {
       display: inline-block;
